@@ -1,7 +1,47 @@
-from django.http import JsonResponse
+import json
+
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 
 from core.models import RadioactiveMaterial
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+
+
+@require_http_methods(["GET"])
+def get_materials(request):
+    radioactive_materials = RadioactiveMaterial.objects.all()
+    materials_list = [
+        {
+            "name": material.name,
+            "constant": material.constant
+        }
+        for material in radioactive_materials
+    ]
+
+    return JsonResponse(materials_list, safe=False)
+
+
+@require_http_methods(["POST"])
+def create_material(request):
+    try:
+        data = json.loads(request.body)
+        name = data.get("name")
+        constant = data.get("constant")
+
+        if not name or constant is None:
+            return HttpResponseBadRequest("O nome e a constante são obrigatórios.")
+
+        material = RadioactiveMaterial(name=name, constant=constant)
+        material.save()
+
+        return JsonResponse({
+            "id": material.id,
+            "name": material.name,
+            "constant": material.constant
+        }, status=201)
+
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest("Formato JSON inválido.")
 
 
 @require_http_methods(["GET"])
