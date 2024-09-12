@@ -4,7 +4,6 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 
 from core.models import RadioactiveMaterial, Result
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 
 
 @require_http_methods(["GET"])
@@ -131,10 +130,25 @@ def get_results(request):
 
 
 @require_http_methods(["DELETE"])
-def delete_results(request):
+def delete_all_results(request):
     deleted_ids = []
     results = Result.objects.all()
     for result in results:
         result.delete()
         deleted_ids.append({"id": result.id})
     return JsonResponse(deleted_ids, safe=False)
+
+
+@require_http_methods(["DELETE"])
+def delete_result(request):
+    result_id = request.GET.get('result_id')
+    if not result_id:
+        return JsonResponse({'error': 'result_id is required'}, status=400)
+
+    try:
+        result = Result.objects.get(id=result_id)
+        result.delete()
+        response = {'id_deleted': result_id}
+        return JsonResponse(response)
+    except Result.DoesNotExist:
+        return JsonResponse({'error': 'Result not found'}, status=404)
