@@ -68,18 +68,38 @@ def create_result(request):
         date = data.get("date")
         radiation_level = data.get("radiation_level")
         altitude = data.get("altitude")
+        access_restrict = data.get("access_restrict")
+        tireoide_monitoring = data.get("tireoide_monitoring")
+        aliment_restrict = data.get("aliment_restrict")
+        people_reallocation = data.get("people_reallocation")
+        immediate_evacuation = data.get("immediate_evacuation")
+        first_minute_contact = data.get("first_minute_contact")
+        second_minute_contact = data.get("second_minute_contact")
 
         if not date or radiation_level is None or altitude is None:
             return HttpResponseBadRequest("Data, nível de radiação e altitude são obrigatórios.")
 
-        result = Result(date=date, radiation_level=radiation_level, altitude=altitude)
+        result = Result(date=date, radiation_level=radiation_level, altitude=altitude,
+                        access_restrict=access_restrict, tireoide_monitoring=tireoide_monitoring,
+                        aliment_restrict=aliment_restrict, people_reallocation=people_reallocation,
+                        immediate_evacuation=immediate_evacuation, first_minute_contact=first_minute_contact,
+                        second_minute_contact=second_minute_contact
+                        )
         result.save()
 
         return JsonResponse({
             "id": result.id,
             "date": result.date,
             "radiation_level": result.radiation_level,
-            "altitude": result.altitude
+            "altitude": result.altitude,
+            "access_restrict": result.access_restrict,
+            "tireoide_monitoring": result.tireoide_monitoring,
+            "aliment_restrict": result.aliment_restrict,
+            "people_reallocation": result.people_reallocation,
+            "immediate_evacuation": result.immediate_evacuation,
+            "first_minute_contact": result.first_minute_contact,
+            "second_minute_contact": result.second_minute_contact,
+
         }, status=201)
 
     except json.JSONDecodeError:
@@ -91,12 +111,30 @@ def get_results(request):
     results = Result.objects.all().order_by('-date')
     results_list = [
         {
+            "id": result.id,
             "date": result.date,
             "radiation_level": result.radiation_level,
-            "altitude": result.altitude
+            "altitude": result.altitude,
+            "access_restrict": result.access_restrict,
+            "tireoide_monitoring": result.tireoide_monitoring,
+            "aliment_restrict": result.aliment_restrict,
+            "people_reallocation": result.people_reallocation,
+            "immediate_evacuation": result.immediate_evacuation,
+            "first_minute_contact": result.first_minute_contact,
+            "second_minute_contact": result.second_minute_contact,
+
         }
         for result in results
     ]
 
     return JsonResponse(results_list, safe=False)
 
+
+@require_http_methods(["DELETE"])
+def delete_results(request):
+    deleted_ids = []
+    results = Result.objects.all()
+    for result in results:
+        result.delete()
+        deleted_ids.append({"id": result.id})
+    return JsonResponse(deleted_ids, safe=False)
