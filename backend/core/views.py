@@ -1,6 +1,6 @@
 import json
 
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.http import require_http_methods
 
 from core.models import RadioactiveMaterial, Result
@@ -103,6 +103,55 @@ def create_result(request):
             "second_minute_contact": result.second_minute_contact,
 
         }, status=201)
+
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest("Formato JSON inválido.")
+
+
+@require_http_methods(["PUT"])
+def edit_result(request, result_id):
+    try:
+        # Carrega o corpo da requisição
+        data = json.loads(request.body)
+
+        # Tenta obter o objeto Result a ser atualizado
+        try:
+            result = Result.objects.get(id=result_id)
+        except Result.DoesNotExist:
+            return HttpResponseNotFound("Resultado não encontrado.")
+        print(result)
+        print(data)
+        # Atualiza os campos apenas se forem enviados na requisição
+        result.date = data.get("date", result.date)
+        result.radiation_level = data.get("radiation_level", result.radiation_level)
+        result.flight_description = data.get("flight_description", result.flight_description)
+        result.altitude = data.get("altitude", result.altitude)
+        result.access_restrict = data.get("access_restrict", result.access_restrict)
+        result.tireoide_monitoring = data.get("tireoide_monitoring", result.tireoide_monitoring)
+        result.aliment_restrict = data.get("aliment_restrict", result.aliment_restrict)
+        result.people_reallocation = data.get("people_reallocation", result.people_reallocation)
+        result.immediate_evacuation = data.get("immediate_evacuation", result.immediate_evacuation)
+        result.first_minute_contact = data.get("first_minute_contact", result.first_minute_contact)
+        result.second_minute_contact = data.get("second_minute_contact", result.second_minute_contact)
+
+        # Salva as alterações no banco de dados
+        result.save()
+
+        # Retorna os dados atualizados
+        return JsonResponse({
+            "id": result.id,
+            "date": result.date,
+            "radiation_level": result.radiation_level,
+            "flight_description": result.flight_description,
+            "altitude": result.altitude,
+            "access_restrict": result.access_restrict,
+            "tireoide_monitoring": result.tireoide_monitoring,
+            "aliment_restrict": result.aliment_restrict,
+            "people_reallocation": result.people_reallocation,
+            "immediate_evacuation": result.immediate_evacuation,
+            "first_minute_contact": result.first_minute_contact,
+            "second_minute_contact": result.second_minute_contact,
+        }, status=200)
 
     except json.JSONDecodeError:
         return HttpResponseBadRequest("Formato JSON inválido.")
