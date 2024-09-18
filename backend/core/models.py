@@ -9,6 +9,7 @@ class RadioactiveMaterial(models.Model):
 class Result(models.Model):
     date = models.DateField()
     radiation_level = models.FloatField(help_text="em µSv/h", db_index=True)
+    flight_description = models.TextField(blank=True, default="")
     altitude = models.FloatField(help_text="em m", db_index=True)
     min_radius = models.FloatField(help_text="em m", db_index=True, default=0)
     access_restrict = models.FloatField(help_text="em m", db_index=True, default=0)

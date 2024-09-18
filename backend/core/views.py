@@ -66,6 +66,7 @@ def create_result(request):
         data = json.loads(request.body)
         date = data.get("date")
         radiation_level = data.get("radiation_level")
+        flight_description = data.get("flight_description")
         altitude = data.get("altitude")
         access_restrict = data.get("access_restrict")
         tireoide_monitoring = data.get("tireoide_monitoring")
@@ -79,6 +80,7 @@ def create_result(request):
             return HttpResponseBadRequest("Data, nível de radiação e altitude são obrigatórios.")
 
         result = Result(date=date, radiation_level=radiation_level, altitude=altitude,
+                        flight_description=flight_description,
                         access_restrict=access_restrict, tireoide_monitoring=tireoide_monitoring,
                         aliment_restrict=aliment_restrict, people_reallocation=people_reallocation,
                         immediate_evacuation=immediate_evacuation, first_minute_contact=first_minute_contact,
@@ -90,6 +92,7 @@ def create_result(request):
             "id": result.id,
             "date": result.date,
             "radiation_level": result.radiation_level,
+            "flight_description": result.flight_description,
             "altitude": result.altitude,
             "access_restrict": result.access_restrict,
             "tireoide_monitoring": result.tireoide_monitoring,
@@ -114,6 +117,7 @@ def get_results(request):
             "date": result.date,
             "radiation_level": result.radiation_level,
             "altitude": result.altitude,
+            "flight_description": result.flight_description,
             "access_restrict": result.access_restrict,
             "tireoide_monitoring": result.tireoide_monitoring,
             "aliment_restrict": result.aliment_restrict,
