@@ -13,6 +13,7 @@ class Result(models.Model):
     altitude = models.FloatField(help_text="em m", db_index=True)
     min_radius = models.FloatField(help_text="em m", db_index=True, default=0)
     access_restrict = models.FloatField(help_text="em m", db_index=True, default=0)
+    security_team = models.FloatField(help_text="em m", db_index=True, default=0)
     tireoide_monitoring = models.FloatField(help_text="em m", db_index=True, default=0)
     aliment_restrict = models.FloatField(help_text="em m", db_index=True, default=0)
     people_reallocation = models.FloatField(help_text="em m", db_index=True, default=0)

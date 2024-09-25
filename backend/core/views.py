@@ -69,6 +69,7 @@ def create_result(request):
         flight_description = data.get("flight_description")
         altitude = data.get("altitude")
         access_restrict = data.get("access_restrict")
+        security_team = data.get("security_team")
         tireoide_monitoring = data.get("tireoide_monitoring")
         aliment_restrict = data.get("aliment_restrict")
         people_reallocation = data.get("people_reallocation")
@@ -81,7 +82,7 @@ def create_result(request):
 
         result = Result(date=date, radiation_level=radiation_level, altitude=altitude,
                         flight_description=flight_description,
-                        access_restrict=access_restrict, tireoide_monitoring=tireoide_monitoring,
+                        access_restrict=access_restrict, security_team=security_team, tireoide_monitoring=tireoide_monitoring,
                         aliment_restrict=aliment_restrict, people_reallocation=people_reallocation,
                         immediate_evacuation=immediate_evacuation, first_minute_contact=first_minute_contact,
                         second_minute_contact=second_minute_contact
@@ -95,6 +96,7 @@ def create_result(request):
             "flight_description": result.flight_description,
             "altitude": result.altitude,
             "access_restrict": result.access_restrict,
+            "security_team": result.security_team,
             "tireoide_monitoring": result.tireoide_monitoring,
             "aliment_restrict": result.aliment_restrict,
             "people_reallocation": result.people_reallocation,
@@ -127,6 +129,7 @@ def edit_result(request, result_id):
         result.flight_description = data.get("flight_description", result.flight_description)
         result.altitude = data.get("altitude", result.altitude)
         result.access_restrict = data.get("access_restrict", result.access_restrict)
+        result.security_team = data.get("security_team", result.security_team)
         result.tireoide_monitoring = data.get("tireoide_monitoring", result.tireoide_monitoring)
         result.aliment_restrict = data.get("aliment_restrict", result.aliment_restrict)
         result.people_reallocation = data.get("people_reallocation", result.people_reallocation)
@@ -145,6 +148,7 @@ def edit_result(request, result_id):
             "flight_description": result.flight_description,
             "altitude": result.altitude,
             "access_restrict": result.access_restrict,
+            "security_team": result.security_team,
             "tireoide_monitoring": result.tireoide_monitoring,
             "aliment_restrict": result.aliment_restrict,
             "people_reallocation": result.people_reallocation,
@@ -168,6 +172,7 @@ def get_results(request):
             "altitude": result.altitude,
             "flight_description": result.flight_description,
             "access_restrict": result.access_restrict,
+            "security_team": result.security_team,
             "tireoide_monitoring": result.tireoide_monitoring,
             "aliment_restrict": result.aliment_restrict,
             "people_reallocation": result.people_reallocation,
